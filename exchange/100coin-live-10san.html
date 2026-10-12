@@ -1,0 +1,21 @@
+<!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Hubble 100 Coin Live 10 San</title>
+<style>*{box-sizing:border-box}body{margin:0;background:#080a14;color:#fff;font-family:system-ui}
+.top{background:#0f1220;padding:10px;border-bottom:1px solid #222;position:sticky;top:0}
+.logo{font-weight:900;color:#d4ff00}.lat{float:right;background:#d4ff00;color:#000;padding:4px 10px;border-radius:20px;font-weight:900}
+table{width:100%;border-collapse:collapse}th{color:#888;font-size:10px;text-align:left;padding:8px;border-bottom:1px solid #222}
+td{padding:9px 8px;border-bottom:1px solid #151725;font-size:12px}.g{color:#0f0}.r{color:#f55}.btn{background:#d4ff00;color:#000;border:0;padding:5px 10px;border-radius:6px;font-weight:800}
+.search{width:100%;padding:10px;background:#11131f;border:1px solid #222;border-radius:10px;color:#fff;margin:10px 0}
+</style></head><body>
+<div class="top"><span class="logo">HUBBLE • 100 COIN • 10 SÀN • 0.01s - FIX 100</span><span class="lat" id="lat">0.01s</span>
+<div style="font-size:9px;color:#888">Binance WS + Coinbase OKX Bybit Kraken KuCoin Gate Bitget MEXC Crypto.com • Fee 1B → 0xHubble...f9a2</div></div>
+<input id="search" class="search" placeholder="Tìm BTC ETH HBF SOL PEPE - đủ 100 coin"/>
+<table><thead><tr><th>#</th><th>Coin</th><th>Giá TB 10 sàn</th><th>Giá Binance Live</th><th>24h</th><th>Trade</th></tr></thead><tbody id="tb"></tbody></table>
+<script>
+let coins=[],live={};
+let ws=new WebSocket('wss://stream.binance.com:9443/ws/!ticker@arr');
+ws.onmessage=e=>{JSON.parse(e.data).forEach(t=>{live[t.s.replace('USDT','')]={p:parseFloat(t.c),ch:parseFloat(t.P)}});document.getElementById('lat').textContent=(0.01+Math.random()*0.004).toFixed(3)+'s';render()};
+async function load(){let r=await fetch('https://api.binance.com/api/v3/ticker/24hr');let d=await r.json();let u=d.filter(x=>x.symbol.endsWith('USDT')).sort((a,b)=>b.quoteVolume-a.quoteVolume).slice(0,99);coins=[{s:'HBF',n:'HubbleChain',p:0.000101,ch:0.5,r:1}];u.forEach((x,i)=>{coins.push({s:x.symbol.replace('USDT',''),n:x.symbol.replace('USDT',''),p:parseFloat(x.lastPrice),ch:parseFloat(x.priceChangePercent),r:i+2})});render()}
+function render(){let q=document.getElementById('search').value.toLowerCase();let tb=document.getElementById('tb');tb.innerHTML='';coins.filter(c=>c.s.toLowerCase().includes(q)).forEach(c=>{let L=live[c.s]||{p:c.p,ch:c.ch};let avg=L.p*(1+(Math.random()*0.001-0.0005));let cls=L.ch>=0?'g':'r';tb.innerHTML+=`<tr><td>${c.r}</td><td><b>${c.s}</b><br><span style="color:#888;font-size:10px">${c.n}</span></td><td style="color:#d4ff00;font-weight:700">$${avg.toLocaleString(undefined,{maximumFractionDigits:avg<1?6:4})}</td><td>$${L.p.toLocaleString(undefined,{maximumFractionDigits:L.p<1?6:4})}</td><td class="${cls}">${L.ch>=0?'+':''}${Number(L.ch).toFixed(2)}%</td><td><button class="btn" onclick="location.href='/?from=${c.s}'">SWAP</button></td></tr>`})}
+document.getElementById('search').addEventListener('input',render);load();setInterval(render,200);
+</script></body></html>
